@@ -1,15 +1,20 @@
 import numpy as np
 import sympy as sp
-import re
-from scipy.optimize import minimize
-############################################################
-# === Caricamento siga0 ===
 
-def load_vector_from_file(filepath):
-    with open(filepath, 'r') as f:
-        content = f.read()
-    matches = re.findall(r'\[\s*([-+]?\d*\.\d+|\d+) \s*\]', content)
-    return np.array([[float(m)] for m in matches])
+#################### LETTURA FILE PROFILO ALA ####################
+def read_airfoil_file(filename):
+    data = []
+    with open(filename, "r") as f:
+        for line in f:
+            parts = line.strip().split()
+            if len(parts) == 2:
+                try:
+                    x = sp.sympify(parts[0])
+                    z = sp.sympify(parts[1])
+                    data.append((x, z))
+                except (sp.SympifyError, ValueError):
+                    continue
+    return data
 
 #################### SOLUZIONE SISTEMA ####################
 def solve_ab(a_val, b_val,vn_ext,rhs):
@@ -20,6 +25,7 @@ def solve_ab(a_val, b_val,vn_ext,rhs):
     rhs_np = np.array(rhs_num.tolist()).astype(np.float64)
     siga_np = np.linalg.solve(vn_np, rhs_np)
     return siga_np
+
 #################### MATRICI AERODINAMICHE ####################
 def Matrici_aerodinamiche(airfoil_data,alpha_sym):
     x = sp.Matrix([p[0] for p in airfoil_data])
@@ -68,17 +74,3 @@ def Matrici_aerodinamiche(airfoil_data,alpha_sym):
     rhs[:N, 0] = sp.cos(alpha_sym) * sinb - sp.sin(alpha_sym) * cosb
     rhs[-1, 0] = 0
     return vn_ext, rhs
-#################### LETTURA FILE PROFILO ALA ####################
-def read_airfoil_file(filename):
-    data = []
-    with open(filename, "r") as f:
-        for line in f:
-            parts = line.strip().split()
-            if len(parts) == 2:
-                try:
-                    x = sp.sympify(parts[0])
-                    z = sp.sympify(parts[1])
-                    data.append((x, z))
-                except (sp.SympifyError, ValueError):
-                    continue
-    return data
