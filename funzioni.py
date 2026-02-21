@@ -28,7 +28,7 @@ def inserisci_dati_manualmente():
     return A, b, scelta_in, autoval
 
 def ger (A,dim_mat) :
-    # Lista dei bordi destri dei dischi di Gershgorin
+    # Lista dei limiti destri dei cerchi di Gershgorin
     gershgorin = []
     for i in range(dim_mat):
         R_i = np.sum(np.abs(A[i, :])) - np.abs(A[i,i]) 
@@ -80,7 +80,7 @@ def annealing (dim_mat,b,p, Psx, H, Pdx,num_reads,sweeps) :
     # Creazione di un sampler, oggetto della classe SimulatedAnnealingSampler, che implementa l’algoritmo di Simulated Annealing per la risoluzione di problemi BQM
     sampler = neal.SimulatedAnnealingSampler() 
     sampleset = sampler.sample(bqm, num_reads=num_reads, sweeps=sweeps) 
-    # In sampleset sono conservate num_reads soluzioni indipendenti del problema generate dal sampler tramite sweeps iterazioni dell'algoritmo
+    # in sampleset sono conservate num_reads soluzioni indipendenti del problema generate dal sampler tramite sweeps iterazioni dell'algoritmo
 
     # Decodifica dei campioni nel sampleset salvati secondo la rappresentazione interna del BQM in configurazioni binarie leggibili secondo le variabili originali del modello PyQUBO
     decoded_samples = model.decode_sampleset(sampleset) 
