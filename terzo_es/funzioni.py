@@ -16,16 +16,6 @@ def read_airfoil_file(filename):
                     continue
     return data
 
-#################### SOLUZIONE SISTEMA ####################
-def solve_ab(a_val, b_val,vn_ext,rhs):
-    a_sym, b_sym = sp.symbols('a b')
-    vn_num = vn_ext.subs({a_sym: a_val, b_sym: b_val}).evalf()
-    rhs_num = rhs.subs({a_sym: a_val, b_sym: b_val}).evalf()
-    vn_np = np.array(vn_num.tolist()).astype(np.float64)
-    rhs_np = np.array(rhs_num.tolist()).astype(np.float64)
-    siga_np = np.linalg.solve(vn_np, rhs_np)
-    return siga_np
-
 #################### MATRICI AERODINAMICHE ####################
 def Matrici_aerodinamiche(airfoil_data,alpha_sym):
     x = sp.Matrix([p[0] for p in airfoil_data])
@@ -74,3 +64,13 @@ def Matrici_aerodinamiche(airfoil_data,alpha_sym):
     rhs[:N, 0] = sp.cos(alpha_sym) * sinb - sp.sin(alpha_sym) * cosb
     rhs[-1, 0] = 0
     return vn_ext, rhs
+
+#################### SOLUZIONE SISTEMA ####################
+def solve_ab(a_val, b_val,vn_ext,rhs):
+    a_sym, b_sym = sp.symbols('a b')
+    vn_num = vn_ext.subs({a_sym: a_val, b_sym: b_val}).evalf()
+    rhs_num = rhs.subs({a_sym: a_val, b_sym: b_val}).evalf()
+    vn_np = np.array(vn_num.tolist()).astype(np.float64)
+    rhs_np = np.array(rhs_num.tolist()).astype(np.float64)
+    siga_np = np.linalg.solve(vn_np, rhs_np)
+    return siga_np
